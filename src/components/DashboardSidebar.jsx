@@ -10,7 +10,9 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Menu
+  Menu,
+  Users,
+  Box
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,7 +40,7 @@ const MetricCard = ({ icon, label, value, unit, subtitle }) => (
   </Card>
 );
 
-export const DashboardSidebar = () => {
+export const DashboardSidebar = ({ activeView = '3d', onViewChange }) => {
   const [isOpen, setIsOpen] = useState(true);        // ✅ Manage open/close state
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -107,6 +109,18 @@ export const DashboardSidebar = () => {
         {isCollapsed ? (
           // Collapsed view - just icons
           <div className="space-y-4">
+            <div 
+              onClick={() => onViewChange('3d')} 
+              className={`cursor-pointer p-2 rounded-full ${activeView === '3d' ? 'bg-dashboard-blue/20' : ''}`}
+            >
+              <Box className="h-6 w-6 text-dashboard-blue mx-auto" />
+            </div>
+            <div 
+              onClick={() => onViewChange('users')} 
+              className={`cursor-pointer p-2 rounded-full ${activeView === 'users' ? 'bg-dashboard-blue/20' : ''}`}
+            >
+              <Users className="h-6 w-6 text-dashboard-blue mx-auto" />
+            </div>
             <Bot className="h-6 w-6 text-dashboard-blue mx-auto" />
             <Lightbulb className="h-6 w-6 text-dashboard-accent mx-auto" />
             <Activity className="h-6 w-6 text-dashboard-blue mx-auto" />
@@ -117,6 +131,26 @@ export const DashboardSidebar = () => {
         ) : (
           // Full view
           <div className="space-y-4">
+            {/* Navigation */}
+            <div className="mb-6 space-y-2">
+              <Button 
+                variant="ghost" 
+                className={`w-full justify-start ${activeView === '3d' ? 'bg-dashboard-blue/20' : ''} hover:bg-dashboard-blue/10 text-dashboard-text`}
+                onClick={() => onViewChange('3d')}
+              >
+                <Box className="h-5 w-5 mr-2" />
+                3D Viewer
+              </Button>
+              <Button 
+                variant="ghost" 
+                className={`w-full justify-start ${activeView === 'users' ? 'bg-dashboard-blue/20' : ''} hover:bg-dashboard-blue/10 text-dashboard-text`}
+                onClick={() => onViewChange('users')}
+              >
+                <Users className="h-5 w-5 mr-2" />
+                User Management
+              </Button>
+            </div>
+            
             {/* Robot Control Section */}
             <Card className="p-4 bg-dashboard-card border-dashboard-blue/20">
               <div className="flex items-center gap-3 mb-4">
@@ -193,6 +227,29 @@ export const DashboardSidebar = () => {
               unit="KW"
             />
 
+            {/* Navigation */}
+            <Card className="p-4 bg-dashboard-card border-dashboard-blue/20 mt-6">
+              <div className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  className={`w-full border-dashboard-blue/20 text-dashboard-text hover:bg-dashboard-blue/10 ${activeView === '3d' ? 'bg-dashboard-blue/20' : 'bg-gray-600'}`}
+                  onClick={() => onViewChange('3d')}
+                >
+                  <Bot className="h-4 w-4 mr-2" />
+                  3D View
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className={`w-full border-dashboard-blue/20 text-dashboard-text hover:bg-dashboard-blue/10 ${activeView === 'users' ? 'bg-dashboard-blue/20' : 'bg-gray-600'}`}
+                  onClick={() => onViewChange('users')}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  User Management
+                </Button>
+              </div>
+            </Card>
+            
             {/* Settings */}
             <Card className="p-4 bg-dashboard-card border-dashboard-blue/20 mt-6">
               <Button 

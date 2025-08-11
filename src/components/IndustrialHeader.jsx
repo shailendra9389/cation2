@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Users, Home, Monitor, Shield, History } from 'lucide-react';
+import { AlertTriangle, Users, Home, Monitor, Shield, History, LogOut } from 'lucide-react';
 import UserManagement from './UserManagement';
 
 
-const IndustrialHeader = () => {
+const IndustrialHeader = ({ user, onLogout, onViewChange }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAlerts, setShowAlerts] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
@@ -128,11 +128,27 @@ const IndustrialHeader = () => {
             {/* Action Buttons */}
             <div className="flex items-center space-x-2">
               <div className="relative group">
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors shadow">
+                <button 
+                  onClick={() => onViewChange('3d')} 
+                  className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors shadow"
+                >
                   <Home className="w-10 h-9 text-white" />
                 </button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
                   Home
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+              
+              <div className="relative group">
+                <button 
+                  onClick={() => onViewChange('users')} 
+                  className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors shadow"
+                >
+                  <Users className="w-10 h-9 text-white" />
+                </button>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+                  User Management
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                 </div>
               </div>
@@ -152,16 +168,7 @@ const IndustrialHeader = () => {
                   <AlertTriangle className="w-10 h-9 text-white" />
                 </button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
-                  overview
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                </div>
-              </div>
-              <div className="relative group">
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors shadow">
-                  <AlertTriangle className="w-10 h-9 text-white" />
-                </button>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
-                  Standard alarm
+                  Alerts
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                 </div>
               </div>
@@ -175,6 +182,22 @@ const IndustrialHeader = () => {
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                 </div>
               </div>
+              
+              {/* Logout Button */}
+              {onLogout && (
+                <div className="relative group ml-4">
+                  <button 
+                    onClick={onLogout}
+                    className="p-2 rounded-lg bg-red-700 hover:bg-red-600 transition-colors shadow"
+                  >
+                    <LogOut className="w-10 h-9 text-white" />
+                  </button>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50">
+                    Logout
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

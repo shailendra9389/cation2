@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, User, Lock, Eye, EyeOff, UserPlus, Shield, Wrench, Settings } from 'lucide-react';
-// import { userAPI } from '../services/api';
+import { userAPI } from '../services/api';
 
 const UserManagement = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -15,9 +15,24 @@ const UserManagement = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
 
   const userLevels = [
-    { value: 'operator', label: 'Operator', icon: User, description: 'Basic operational access' },
-    { value: 'maintenance', label: 'Maintenance', icon: Wrench, description: 'Maintenance and repair access' },
-    { value: 'engineer', label: 'Engineer', icon: Settings, description: 'Full system access and user management' }
+    { 
+      value: 'engineer', 
+      label: 'Engineer', 
+      icon: Settings, 
+      description: 'Access to temperature control and hopper' 
+    },
+    { 
+      value: 'operator', 
+      label: 'Operator', 
+      icon: User, 
+      description: 'Access to bottle rotation and door lock' 
+    },
+    { 
+      value: 'maintenance', 
+      label: 'Maintenance', 
+      icon: Wrench, 
+      description: 'Access to clamp control and alarms' 
+    }
   ];
 
   const handleInputChange = (e) => {
@@ -26,7 +41,7 @@ const UserManagement = ({ isOpen, onClose }) => {
       ...prev,
       [name]: value
     }));
-    setError(''); // Clear error when user types
+    setError('');
   };
 
   const validateForm = () => {
@@ -56,20 +71,15 @@ const UserManagement = ({ isOpen, onClose }) => {
     setError('');
     
     try {
-      // Prepare user data for API
       const userData = {
         name: formData.name,
         password: formData.password,
         userLevel: formData.userLevel
       };
 
-      // Call the API to create user
       const response = await userAPI.createUser(userData);
       
       if (response.success) {
-        console.log('User created successfully:', response.data);
-        
-        // Reset form
         setFormData({
           name: '',
           password: '',
@@ -77,10 +87,7 @@ const UserManagement = ({ isOpen, onClose }) => {
           userLevel: 'operator'
         });
         
-        // Close modal
         onClose();
-        
-        // You can add a success notification here
         alert('User created successfully!');
       } else {
         setError(response.error || 'Failed to create user');
@@ -98,7 +105,6 @@ const UserManagement = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-gray-800 border-2 border-gray-600 rounded-lg shadow-xl w-full max-w-md mx-4">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-600">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
@@ -114,16 +120,13 @@ const UserManagement = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Error Message */}
           {error && (
             <div className="p-3 bg-red-900 border border-red-600 rounded-lg">
               <p className="text-red-200 text-sm">{error}</p>
             </div>
           )}
 
-          {/* Name Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
               Full Name
@@ -144,7 +147,6 @@ const UserManagement = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
               Password
@@ -176,7 +178,6 @@ const UserManagement = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Confirm Password Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
               Confirm Password
@@ -208,7 +209,6 @@ const UserManagement = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* User Level Selection */}
           <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-300">
               User Level
@@ -246,7 +246,6 @@ const UserManagement = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
@@ -267,4 +266,4 @@ const UserManagement = ({ isOpen, onClose }) => {
   );
 };
 
-export default UserManagement; 
+export default UserManagement;
