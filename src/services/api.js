@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -93,9 +93,27 @@ const handleApiError = (error) => {
 export const userAPI = {
   login: async (credentials) => {
     try {
+      console.log('API login request with:', credentials);
+      console.log('API URL:', API_URL);
+      console.log('Full request URL:', `${API_URL}/users/login`);
+      
       const response = await apiClient.post('/users/login', credentials);
-      return { success: true, data: response.data };
+      console.log('API login response status:', response.status);
+      console.log('API login response data:', response.data);
+      
+      // Check if the response has the expected structure
+      if (response.data && response.data.success) {
+        console.log('Login API call successful');
+        return { success: true, data: response.data };
+      } else {
+        console.warn('Unexpected API response structure:', response.data);
+        return { success: false, error: 'Unexpected API response format' };
+      }
     } catch (error) {
+      console.error('API login error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error headers:', error.response?.headers);
       return handleApiError(error);
     }
   },

@@ -71,7 +71,7 @@ export default function ThreeDViewer({ scale = 1 }) {
         intensity={0.8} 
         color="#88c0ff" 
       />
-      <hemisphereLight intensity={0.2} color="#ffffff" groundColor="#808080" />
+      <hemisphereLight intensity={0.2} color="#ffffff" groundColor="#ffffff" />
 
       <Suspense fallback={<Html center>Loading 3D Model...</Html>}>
         {/* Studio environment for better reflections */}

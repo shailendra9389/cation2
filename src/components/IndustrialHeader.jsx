@@ -50,7 +50,7 @@ const IndustrialHeader = ({ user, onLogout, onViewChange }) => {
               <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
                 <div className="w-4 h-4 rounded-full bg-white"></div>
               </div>
-              <span className="text-xl font-bold text-white tracking-wide">Sidel</span>
+              <span className="text-xl font-bold text-white tracking-wide">INTELLIMETA</span>
               <div className="relative group">
                 <button 
                   onClick={() => setShowAlerts(!showAlerts)}

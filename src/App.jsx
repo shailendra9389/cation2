@@ -18,21 +18,37 @@ function App() {
     const storedUser = localStorage.getItem('user');
 
     if (token && storedUser) {
-      setIsAuthenticated(true);
-      setCurrentUser(JSON.parse(storedUser));
+      try {
+        setIsAuthenticated(true);
+        setCurrentUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing user data from localStorage:', error);
+        // Clear invalid data
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+      }
     }
   }, []);
 
   const handleLoginSuccess = (user) => {
     console.log("✅ Logged-in user:", user);
+    console.log("✅ Auth token in localStorage:", localStorage.getItem('authToken'));
+    
+    if (!user) {
+      console.error("❌ No user data received in handleLoginSuccess");
+      return;
+    }
+    
     setIsAuthenticated(true);
     setCurrentUser(user);
     
     // Store user information in localStorage
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      console.log("✅ User information stored in localStorage");
-    }
+    localStorage.setItem('user', JSON.stringify(user));
+    console.log("✅ User information stored in localStorage");
+    
+    // Verify the data was stored correctly
+    const storedUser = localStorage.getItem('user');
+    console.log("✅ Stored user data:", storedUser);
   };
 
   const handleLogout = () => {

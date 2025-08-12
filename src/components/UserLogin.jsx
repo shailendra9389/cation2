@@ -3,53 +3,45 @@ import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { userAPI } from '../services/api';
 
 const UserLogin = ({ onLoginSuccess }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ name: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError(''); // Clear error when user types
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       const response = await userAPI.login(formData);
-      
+      console.log("🔍 Full login API response:", response);
+
       if (response.success) {
-        console.log('Login successful');
-        // Store the token in localStorage
-        localStorage.setItem('authToken', response.data.token);
-        
-        // Store user information in localStorage
-        if (response.data.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-          console.log('User data stored in localStorage:', response.data.user);
-        }
-        
-        // Call the onLoginSuccess callback
+        // The API response structure is response.data.data, not just response.data
+        const { token, user } = response.data.data;
+        console.log("💾 Saving user:", user);
+        // Store both token and user in localStorage
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Notify parent
         if (onLoginSuccess) {
-          onLoginSuccess(response.data.user);
+          onLoginSuccess(user);
         }
-        
-        // Success notification
-        alert(`Login successful! Welcome, ${response.data.user?.name || 'User'}`);
+
+        alert('Login successful!');
       } else {
         setError(response.error || 'Invalid credentials');
       }
     } catch (error) {
+      console.warn("⚠️ Login API returned no user");
       console.error('Login error:', error);
       setError(error.message || 'An error occurred during login');
     } finally {
@@ -59,103 +51,68 @@ const UserLogin = ({ onLoginSuccess }) => {
 
   return (
     <div className="bg-gray-800 border-2 border-gray-600 rounded-lg shadow-xl w-full max-w-md mx-auto">
+      {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-600">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-            <div className="w-4 h-4 rounded-full bg-white"></div>
-          </div>
-          <h2 className="text-xl font-bold text-white">User Authentication</h2>
-        </div>
+        <h2 className="text-xl font-bold text-white">User Authentication</h2>
       </div>
 
       {/* Login Form */}
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* Error Message */}
         {error && (
           <div className="p-3 bg-red-900 border border-red-600 rounded-lg">
             <p className="text-red-200 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Username Field */}
+        {/* Username */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">
-            Username
-          </label>
+          <label className="block text-sm font-medium text-gray-300">Username</label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
-            </div>
+            <User className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="block w-full pl-10 pr-3 py-3 bg-gray-700 text-white rounded-lg border border-gray-600"
               placeholder="Enter username"
               required
             />
           </div>
         </div>
 
-        {/* Password Field */}
+        {/* Password */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">
-            Password
-          </label>
+          <label className="block text-sm font-medium text-gray-300">Password</label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
-            </div>
+            <Lock className="absolute left-3 top-3 text-gray-400" />
             <input
               type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="block w-full pl-10 pr-12 py-3 bg-gray-700 text-white rounded-lg border border-gray-600"
               placeholder="Enter password"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              className="absolute right-3 top-3 text-gray-400"
             >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-300" />
-              ) : (
-                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-300" />
-              )}
+              {showPassword ? <EyeOff /> : <Eye />}
             </button>
           </div>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium"
         >
-          {isLoading ? (
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span>Signing In...</span>
-            </div>
-          ) : (
-            'Sign In'
-          )}
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
-
-        {/* Demo Credentials */}
-        <div className="text-center">
-          <p className="text-xs text-gray-400 mb-2">Demo Credentials:</p>
-          <p className="text-xs text-gray-500">
-            Username: <span className="text-gray-300">Admin User</span>
-          </p>
-          <p className="text-xs text-gray-500">
-            Password: <span className="text-gray-300">admin123</span>
-          </p>
-        </div>
       </form>
     </div>
   );
